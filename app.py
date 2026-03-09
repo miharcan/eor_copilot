@@ -6,6 +6,7 @@ from src.agents.generator import generate_answer
 from src.agents.verifier import verify
 from src.agents.safety import audit_log, redact_pii
 
+
 def _extract_countries():
     countries = set()
     for policy in load_policies():
@@ -14,9 +15,11 @@ def _extract_countries():
             countries.add(country.lower())
     return countries
 
+
 def _detect_countries_in_query(query, countries):
     query_lower = query.lower()
     return [c for c in countries if c in query_lower]
+
 
 def run_query(query):
 
@@ -48,8 +51,6 @@ def run_query(query):
         for e in evidence:
             print(f"{e['doc_id']} - {e['section']}")
 
-    
-
     t1 = time.time()
     draft_raw = generate_answer(query, evidence)
 
@@ -64,7 +65,7 @@ def run_query(query):
             "escalation": "Consult Legal",
             "follow_up_questions": []
         }
-    
+
     t_generation_ms = int((time.time() - t1) * 1000)
 
     print("\nDraft Answer:")

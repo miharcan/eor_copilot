@@ -1,9 +1,9 @@
 from openai import OpenAI
-
 from dotenv import load_dotenv
-load_dotenv()
 
 from src.agents.prompts import GENERATOR_PROMPT
+
+load_dotenv()
 
 client = OpenAI()
 
