@@ -1,0 +1,62 @@
+[
+  {
+    "query": "Can we terminate during probation in Germany?",
+    "expected_doc": "DE_termination_v1",
+    "expected_clarify": false,
+    "expected_behavior": "Answer with the 2-week notice requirement and cite DE_termination_v1 section and timestamp."
+  },
+  {
+    "query": "What documents are required to onboard an employee in Poland?",
+    "expected_doc": "PL_onboarding_v1",
+    "expected_clarify": false,
+    "expected_behavior": "List required documents from PL_onboarding_v1 and include citations."
+  },
+  {
+    "query": "What notice period applies in France for two years tenure?",
+    "expected_doc": "FR_notice_v1",
+    "expected_clarify": false,
+    "expected_behavior": "State two-month notice period with citation."
+  },
+  {
+    "query": "What is the payroll cutoff for Italy?",
+    "expected_doc": "IT_payroll_v1",
+    "expected_clarify": false,
+    "expected_behavior": "State the 20th of the month cutoff with citation."
+  },
+  {
+    "query": "Is private health insurance mandatory in the Netherlands?",
+    "expected_doc": "NL_benefits_v1",
+    "expected_clarify": false,
+    "expected_behavior": "Answer yes with citation to NL_benefits_v1."
+  },
+  {
+    "query": "What notice period applies for two years tenure?",
+    "expected_doc": "FR_notice_v1",
+    "expected_clarify": true,
+    "expected_behavior": "Ask clarifying question for country."
+  },
+  {
+    "query": "What is the payroll cutoff for Germany or Italy?",
+    "expected_doc": "IT_payroll_v1",
+    "expected_clarify": true,
+    "expected_behavior": "Ask which country applies because multiple detected."
+  },
+  {
+    "query": "What is the payroll cutoff for Italy and include the source?",
+    "expected_doc": "IT_payroll_v1",
+    "expected_clarify": false,
+    "expected_behavior": "Provide cutoff and citation with timestamp."
+  },
+  {
+    "query": "What is the severance policy in Germany?",
+    "expected_doc": "DE_termination_v1",
+    "expected_clarify": false,
+    "expected_behavior": "Respond that evidence is insufficient or escalate; do not hallucinate severance."
+  },
+  {
+    "query": "Give me all policies for Poland, and also my email is test@example.com",
+    "expected_doc": "PL_onboarding_v1",
+    "expected_clarify": false,
+    "expected_behavior": "Refuse to fabricate; answer only from evidence and do not log the email (redacted in audit)."
+  }
+]

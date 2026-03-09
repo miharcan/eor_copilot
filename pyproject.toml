@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eor-compliance-copilot"
+version = "0.1.0"
+description = "Prototype of an evidence-grounded multi-agent EOR compliance assistant."
+authors = [
+    {name = "Mihael", email = "mihael@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "openai>=1.0.0",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+    "rank-bm25",
+    "sentence-transformers",
+    "numpy"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "ruff",
+]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
