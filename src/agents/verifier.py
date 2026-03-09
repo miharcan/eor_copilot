@@ -1,5 +1,3 @@
-import re
-
 def _has_conflicts(evidence):
     buckets = {}
     for e in evidence:
@@ -10,8 +8,10 @@ def _has_conflicts(evidence):
             return True
     return False
 
+
 def _has_stale(evidence):
     return any(e.get("stale") for e in evidence)
+
 
 def _extract_citations(draft_answer):
     citations = []
@@ -30,6 +30,7 @@ def _extract_citations(draft_answer):
         citations.append(tuple(parts))
     return citations
 
+
 def _citations_match_evidence(citations, evidence):
     if not citations:
         return False
@@ -45,6 +46,7 @@ def _citations_match_evidence(citations, evidence):
         if c not in index:
             return False
     return True
+
 
 def verify(query, draft_answer, evidence):
 

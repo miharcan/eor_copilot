@@ -4,10 +4,11 @@ import re
 from datetime import datetime, timedelta
 
 AUDIT_LOG_PATH = "audit.log"
-RETENTION_DAYS = 90
+RETENTION_DAYS = 365  # 1 year
 
 _EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
 _PHONE_RE = re.compile(r"\b(\+?\d[\d\s().-]{7,}\d)\b")
+
 
 def redact_pii(text):
     if not text:
@@ -15,6 +16,7 @@ def redact_pii(text):
     redacted = _EMAIL_RE.sub("[REDACTED_EMAIL]", text)
     redacted = _PHONE_RE.sub("[REDACTED_PHONE]", redacted)
     return redacted
+
 
 def _purge_old_entries(lines):
     cutoff = datetime.utcnow() - timedelta(days=RETENTION_DAYS)
@@ -26,9 +28,9 @@ def _purge_old_entries(lines):
             if ts >= cutoff:
                 kept.append(line)
         except Exception:
-            # Keep malformed lines to avoid data loss.
             kept.append(line)
     return kept
+
 
 def audit_log(event, payload):
     record = {
