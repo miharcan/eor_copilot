@@ -1,4 +1,5 @@
 import time
+import json
 
 from src.agents.retriever import retrieve, load_policies
 from src.agents.generator import generate_answer
@@ -47,20 +48,34 @@ def run_query(query):
         for e in evidence:
             print(f"{e['doc_id']} - {e['section']}")
 
-    print("\nCitations:")
-
-    if not evidence:
-        print("None")
-    else:
-        for e in evidence:
-            print(f"{e['doc_id']} §{e['section']} ({e['timestamp']})")
+    
 
     t1 = time.time()
-    draft = generate_answer(query, evidence)
+    draft_raw = generate_answer(query, evidence)
+
+    try:
+        draft = json.loads(draft_raw)
+    except Exception:
+        draft = {
+            "final_answer": "Unable to determine the answer from available policy evidence.",
+            "citations": [],
+            "confidence": "Low",
+            "reason": "Generator returned invalid or empty JSON.",
+            "escalation": "Consult Legal",
+            "follow_up_questions": []
+        }
+    
     t_generation_ms = int((time.time() - t1) * 1000)
 
     print("\nDraft Answer:")
-    print(draft)
+    print(draft["final_answer"])
+
+    print("\nCitations:")
+    if draft.get("citations"):
+        for c in draft["citations"]:
+            print(f"{c['doc_id']} | {c['section']} | {c['timestamp']}")
+    else:
+        print("None")
 
     verification = verify(query, draft, evidence)
     audit_log(
@@ -81,7 +96,7 @@ def run_query(query):
     print("\nVerifier Feedback:")
     print(verification)
 
-    print("\nFinal Answer:")
+    # Final Answer
     if verification.get("confidence") != "Medium" or verification.get("escalation") != "None":
         print(
             "Unable to provide a grounded answer. "
@@ -96,7 +111,12 @@ def run_query(query):
             },
         )
     else:
-        print(draft)
+        print("\nFinal Answer:")
+        print(draft["final_answer"])
+
+        print("\nCitations:")
+        for c in draft.get("citations", []):
+            print(f"{c['doc_id']} | {c['section']} | {c['timestamp']}")
 
     print("\nConfidence:", verification["confidence"])
     print("Reason:", verification["reason"])

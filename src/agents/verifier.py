@@ -13,43 +13,33 @@ def _has_stale(evidence):
     return any(e.get("stale") for e in evidence)
 
 
-def _extract_citations(draft_answer):
-    citations = []
-    if "Citations:" not in draft_answer:
-        return citations
-    _, tail = draft_answer.split("Citations:", 1)
-    for line in tail.splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        if "|" not in line:
-            continue
-        parts = [p.strip() for p in line.split("|")]
-        if len(parts) != 3:
-            continue
-        citations.append(tuple(parts))
-    return citations
-
-
 def _citations_match_evidence(citations, evidence):
     if not citations:
         return False
-    index = set(
+
+    evidence_index = {
         (
             str(e.get("doc_id")),
             str(e.get("section")),
             str(e.get("timestamp")),
         )
         for e in evidence
-    )
+    }
+
     for c in citations:
-        if c not in index:
+        citation_tuple = (
+            str(c.get("doc_id")),
+            str(c.get("section")),
+            str(c.get("timestamp")),
+        )
+
+        if citation_tuple not in evidence_index:
             return False
+
     return True
 
 
 def verify(query, draft_answer, evidence):
-
     if not evidence:
         return {
             "confidence": "Low",
@@ -57,7 +47,8 @@ def verify(query, draft_answer, evidence):
             "escalation": "Consult Legal or policy documentation."
         }
 
-    citations = _extract_citations(draft_answer)
+    citations = draft_answer.get("citations", [])
+
     if not _citations_match_evidence(citations, evidence):
         return {
             "confidence": "Low",
@@ -79,7 +70,16 @@ def verify(query, draft_answer, evidence):
             "escalation": "Confirm with Legal or updated policy sources."
         }
 
-    if "insufficient" in draft_answer.lower():
+    answer_text = (draft_answer.get("final_answer") or "").lower()
+    if any(
+        phrase in answer_text
+        for phrase in [
+            "insufficient",
+            "unable to determine",
+            "does not contain information",
+            "cannot determine",
+        ]
+    ):
         return {
             "confidence": "Low",
             "reason": "Evidence does not support a conclusion.",

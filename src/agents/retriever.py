@@ -98,7 +98,7 @@ def retrieve(query):
     ]
 
     if not country_filtered_indices:
-        return []
+        country_filtered_indices = list(range(len(METADATA)))
 
     bm25_scores = BM25.get_scores(query_tokens)
     query_embedding = model.encode([query], normalize_embeddings=True)[0]
@@ -112,6 +112,17 @@ def retrieve(query):
         country_filtered_indices,
         key=lambda i: hybrid_scores[i],
         reverse=True
-    )[:3]
+    )
 
-    return [METADATA[i] for i in ranked if hybrid_scores[i] > 0.2]
+    filtered = []
+
+    for i in ranked:
+        if hybrid_scores[i] < 0.2:
+            continue
+
+        if bm25_scores[i] < 0.05 and dense_scores[i] < 0.25:
+            continue
+
+        filtered.append(i)
+
+    return [METADATA[i] for i in filtered[:3]]
