@@ -1,12 +1,14 @@
 import json
 import os
 import re
+from datetime import date
 import numpy as np
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
 from src.agents.policy_schema import PolicyDocument
 
 POLICY_DIR = "data/policies"
+STALE_DAYS_THRESHOLD = 365
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -25,21 +27,33 @@ def _is_stale(policy, all_policies):
     doc_id = policy["doc_id"]
 
     if "_v" not in doc_id:
+        version_stale = False
+    else:
+        base, version = doc_id.rsplit("_v", 1)
+        version = int(version)
+
+        version_stale = False
+        for p in all_policies:
+            other = p["doc_id"]
+
+            if other.startswith(base + "_v"):
+                other_version = int(other.rsplit("_v", 1)[1])
+
+                if other_version > version:
+                    version_stale = True
+                    break
+
+    date_stale = _is_date_stale(policy.get("last_updated"))
+    return version_stale or date_stale
+
+def _is_date_stale(last_updated):
+    if not last_updated:
         return False
-
-    base, version = doc_id.rsplit("_v", 1)
-    version = int(version)
-
-    for p in all_policies:
-        other = p["doc_id"]
-
-        if other.startswith(base + "_v"):
-            other_version = int(other.rsplit("_v", 1)[1])
-
-            if other_version > version:
-                return True
-
-    return False
+    try:
+        updated = date.fromisoformat(last_updated)
+    except ValueError:
+        return False
+    return (date.today() - updated).days > STALE_DAYS_THRESHOLD
 
 
 def _latest_by_doc_id(policies):

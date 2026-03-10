@@ -28,6 +28,15 @@ This document describes the system design for an evidence‑grounded EOR complia
 5. **Finalize output**: `app.py` prints the required output fields. If verification fails, it refuses and escalates.
 6. **Audit log**: `safety.py` logs evidence trail, verification results, and escalation events with PII redaction and retention.
 
+**Translation placement (multilingual mode)**
+```
+User Query (any language)
+    ↓ detect + translate to English
+English Query → Retrieve → Generate → Verify
+    ↓ translate final answer + follow-ups back to user language
+Final Response (user language) + Citations (unchanged)
+```
+
 ## 2) Knowledge & Data
 
 **Document representation**

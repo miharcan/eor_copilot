@@ -150,6 +150,7 @@ Notes:
 - First run downloads `all-MiniLM-L6-v2`; HF warning is expected without `HF_TOKEN`.
 - Generator uses OpenAI API; set `OPENAI_API_KEY` for full evaluation.
 - Queries can be multilingual; the system translates to English for retrieval and returns answers in the user’s language.
+- Optional offline translation: install `argostranslate` and language packs to avoid API calls.
 
 Generate a policy knowledge graph export:
 
