@@ -17,6 +17,15 @@ def redact_pii(text):
     redacted = _PHONE_RE.sub("[REDACTED_PHONE]", redacted)
     return redacted
 
+def sanitize_payload(payload):
+    if isinstance(payload, str):
+        return redact_pii(payload)
+    if isinstance(payload, list):
+        return [sanitize_payload(v) for v in payload]
+    if isinstance(payload, dict):
+        return {k: sanitize_payload(v) for k, v in payload.items()}
+    return payload
+
 
 def _purge_old_entries(lines):
     cutoff = datetime.utcnow() - timedelta(days=RETENTION_DAYS)
@@ -36,7 +45,7 @@ def audit_log(event, payload):
     record = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "event": event,
-        "payload": payload,
+        "payload": sanitize_payload(payload),
     }
     os.makedirs(os.path.dirname(AUDIT_LOG_PATH) or ".", exist_ok=True)
     if os.path.exists(AUDIT_LOG_PATH):

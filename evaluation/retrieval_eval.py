@@ -1,6 +1,7 @@
 import json
 from src.agents.retriever import retrieve, load_policies
 from src.agents.generator import generate_answer
+from src.agents.verifier import verify
 
 
 def recall_at_k(test_cases, k=3):
@@ -23,6 +24,15 @@ def recall_at_k(test_cases, k=3):
 
 
 def _extract_citations(draft_answer):
+    if isinstance(draft_answer, dict):
+        return [
+            (
+                str(c.get("doc_id")),
+                str(c.get("section")),
+                str(c.get("timestamp")),
+            )
+            for c in draft_answer.get("citations", [])
+        ]
     citations = []
     if "Citations:" not in draft_answer:
         return citations
@@ -105,6 +115,28 @@ def clarity_behavior_accuracy(test_cases):
 
     return correct / len(test_cases)
 
+def escalation_accuracy(test_cases):
+
+    total = 0
+    correct = 0
+
+    for case in test_cases:
+        if "expected_escalate" not in case:
+            continue
+        total += 1
+        query = case["query"]
+        expected = case["expected_escalate"]
+        evidence = retrieve(query)
+        answer = generate_answer(query, evidence)
+        verification = verify(query, answer, evidence)
+        predicted = verification.get("escalation") != "None"
+        if predicted == expected:
+            correct += 1
+
+    if total == 0:
+        return None
+    return correct / total
+
 
 def run_evaluation():
 
@@ -114,6 +146,7 @@ def run_evaluation():
     r_at_3 = recall_at_k(test_cases, k=3)
     citation = citation_validity(test_cases)
     clarity = clarity_behavior_accuracy(test_cases)
+    escalation = escalation_accuracy(test_cases)
 
     print("\nRetrieval / Reasoning Evaluation")
     print("--------------------------------")
@@ -121,6 +154,8 @@ def run_evaluation():
     print("Recall@3:", r_at_3)
     print("Citation validity:", citation)
     print("Clarifying behavior accuracy:", clarity)
+    if escalation is not None:
+        print("Escalation accuracy:", escalation)
 
 
 if __name__ == "__main__":

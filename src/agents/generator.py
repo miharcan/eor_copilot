@@ -1,3 +1,5 @@
+import json
+
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -8,22 +10,24 @@ load_dotenv()
 client = OpenAI()
 
 
+def _fallback_response(reason, escalation, follow_up_questions=None):
+    return {
+        "final_answer": "Unable to provide a grounded answer.",
+        "citations": [],
+        "confidence": "Low",
+        "reason": reason,
+        "escalation": escalation,
+        "follow_up_questions": follow_up_questions or [],
+    }
+
+
 def generate_answer(query, evidence):
 
     if not evidence:
-        return (
-            "Final Answer:\n"
-            "Unable to determine the answer from available policy documents.\n\n"
-            "Citations:\n"
-            "None\n\n"
-            "Confidence:\n"
-            "Low\n\n"
-            "Reason:\n"
-            "No relevant policy evidence was retrieved.\n\n"
-            "Escalation:\n"
-            "Consult Legal or internal policy documentation.\n\n"
-            "Follow-up Questions:\n"
-            "Please clarify the country, policy area, or employment context.\n"
+        return _fallback_response(
+            "No relevant policy evidence was retrieved.",
+            "Consult Legal",
+            ["Which country does this question apply to?"],
         )
 
     evidence_text = "\n\n".join(
@@ -53,19 +57,10 @@ Evidence:
             input=prompt,
             temperature=0
         )
-        return response.output_text
+        raw = response.output_text.strip()
+        return json.loads(raw)
     except Exception:
-        return (
-            "Final Answer:\n"
-            "Unable to generate a grounded answer due to a system error.\n\n"
-            "Citations:\n"
-            "None\n\n"
-            "Confidence:\n"
-            "Low\n\n"
-            "Reason:\n"
-            "The generator encountered a system error.\n\n"
-            "Escalation:\n"
-            "Consult Legal or retry with updated policy evidence.\n\n"
-            "Follow-up Questions:\n"
-            "None\n"
+        return _fallback_response(
+            "The generator encountered a system error or invalid JSON.",
+            "Consult Legal",
         )

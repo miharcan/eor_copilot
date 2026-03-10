@@ -3,7 +3,14 @@
     "query": "Can we terminate during probation in Germany?",
     "expected_doc": "DE_termination_v1",
     "expected_clarify": false,
-    "expected_behavior": "Answer with the 2-week notice requirement and cite DE_termination_v1 section and timestamp."
+    "expected_behavior": "Answer with the 2-week notice requirement and cite DE_termination_v1 section and timestamp.",
+    "expected_escalate": true
+  },
+  {
+    "query": "Can we onboard someone in Spain without a local bank account?",
+    "expected_doc": "ES_onboarding_v1",
+    "expected_clarify": false,
+    "expected_behavior": "State that a local Spanish bank account is typically required and cite ES_onboarding_v1."
   },
   {
     "query": "What documents are required to onboard an employee in Poland?",
@@ -15,7 +22,8 @@
     "query": "What notice period applies in France for two years tenure?",
     "expected_doc": "FR_notice_v1",
     "expected_clarify": false,
-    "expected_behavior": "State two-month notice period with citation."
+    "expected_behavior": "State two-month notice period with citation.",
+    "expected_escalate": false
   },
   {
     "query": "What is the payroll cutoff for Italy?",
@@ -27,19 +35,22 @@
     "query": "Is private health insurance mandatory in the Netherlands?",
     "expected_doc": "NL_benefits_v1",
     "expected_clarify": false,
-    "expected_behavior": "Answer yes with citation to NL_benefits_v1."
+    "expected_behavior": "Answer yes with citation to NL_benefits_v1.",
+    "expected_escalate": false
   },
   {
     "query": "What notice period applies for two years tenure?",
     "expected_doc": "FR_notice_v1",
     "expected_clarify": true,
-    "expected_behavior": "Ask clarifying question for country."
+    "expected_behavior": "Ask clarifying question for country.",
+    "expected_escalate": true
   },
   {
     "query": "What is the payroll cutoff for Germany or Italy?",
     "expected_doc": "IT_payroll_v1",
     "expected_clarify": true,
-    "expected_behavior": "Ask which country applies because multiple detected."
+    "expected_behavior": "Ask which country applies because multiple detected.",
+    "expected_escalate": true
   },
   {
     "query": "What is the payroll cutoff for Italy and include the source?",
@@ -51,12 +62,28 @@
     "query": "What is the severance policy in Germany?",
     "expected_doc": "DE_termination_v1",
     "expected_clarify": false,
-    "expected_behavior": "Respond that evidence is insufficient or escalate; do not hallucinate severance."
+    "expected_behavior": "Respond that evidence is insufficient or escalate; do not hallucinate severance.",
+    "expected_escalate": true
   },
   {
     "query": "Give me all policies for Poland, and also my email is test@example.com",
     "expected_doc": "PL_onboarding_v1",
     "expected_clarify": false,
-    "expected_behavior": "Refuse to fabricate; answer only from evidence and do not log the email (redacted in audit)."
+    "expected_behavior": "Refuse to fabricate; answer only from evidence and do not log the email (redacted in audit).",
+    "expected_escalate": false
+  },
+  {
+    "query": "Can we terminate an employee in Germany?",
+    "expected_doc": "DE_termination_v1",
+    "expected_clarify": false,
+    "expected_behavior": "Escalate due to missing contract type and high-risk termination topic.",
+    "expected_escalate": true
+  },
+  {
+    "query": "Is termination allowed if the employee alleges discrimination in France?",
+    "expected_doc": "FR_notice_v1",
+    "expected_clarify": false,
+    "expected_behavior": "Escalate due to high-risk discrimination topic.",
+    "expected_escalate": true
   }
 ]
