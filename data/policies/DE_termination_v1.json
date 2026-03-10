@@ -1,0 +1,14 @@
+{
+  "doc_id": "DE_termination_v1",
+  "country": "Germany",
+  "policy_type": "termination",
+  "version": 1,
+  "last_updated": "2025-01-01",
+  "sections": [
+    {
+      "section_id": "probation",
+      "title": "Termination During Probation",
+      "text": "Employees in Germany may be terminated during the probation period with a notice period of two weeks unless otherwise specified in the employment contract."
+    }
+  ]
+}

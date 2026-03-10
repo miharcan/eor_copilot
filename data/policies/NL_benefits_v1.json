@@ -1,0 +1,13 @@
+{
+  "doc_id": "NL_benefits_v1",
+  "country": "Netherlands",
+  "policy_type": "benefits",
+  "last_updated": "2025-01-01",
+  "sections": [
+    {
+      "section_id": "health_insurance",
+      "title": "Private Health Insurance",
+      "text": "Private health insurance is mandatory for residents and employees in the Netherlands under the Dutch Health Insurance Act."
+    }
+  ]
+}

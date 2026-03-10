@@ -1,0 +1,13 @@
+{
+  "doc_id": "FR_notice_v1",
+  "country": "France",
+  "policy_type": "notice",
+  "last_updated": "2025-01-01",
+  "sections": [
+    {
+      "section_id": "notice_period",
+      "title": "Notice Period",
+      "text": "In France, employees with two years of tenure typically have a notice period of two months unless otherwise specified in the contract."
+    }
+  ]
+}

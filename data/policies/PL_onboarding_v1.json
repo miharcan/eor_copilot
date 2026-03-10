@@ -1,0 +1,14 @@
+{
+  "doc_id": "PL_onboarding_v1",
+  "country": "Poland",
+  "policy_type": "onboarding",
+  "version": 1,
+  "last_updated": "2025-01-01",
+  "sections": [
+    {
+      "section_id": "documents",
+      "title": "Required Onboarding Documents",
+      "text": "Required onboarding documents in Poland include a national ID or passport, tax identification number (NIP), signed employment contract, and bank account details for payroll."
+    }
+  ]
+}

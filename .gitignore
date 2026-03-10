@@ -19,8 +19,6 @@ venv/
 # Logs
 *.log
 
-# Data
-data/
 
 # Python build artifacts
 *.egg-info/

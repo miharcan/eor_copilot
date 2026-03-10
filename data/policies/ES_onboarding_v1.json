@@ -1,0 +1,19 @@
+{
+  "doc_id": "ES_onboarding_v1",
+  "country": "Spain",
+  "policy_type": "onboarding",
+  "version": 1,
+  "last_updated": "2025-01-01",
+  "sections": [
+    {
+      "section_id": "documents",
+      "title": "Required Onboarding Documents",
+      "text": "Required onboarding documents in Spain include a national ID or passport, tax identification number (NIF/NIE), signed employment contract, and bank account details for payroll."
+    },
+    {
+      "section_id": "bank_account",
+      "title": "Local Bank Account Requirement",
+      "text": "A local Spanish bank account is typically required for payroll; exceptions require HR approval and alternative payroll arrangements."
+    }
+  ]
+}

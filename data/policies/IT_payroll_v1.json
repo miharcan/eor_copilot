@@ -1,0 +1,13 @@
+{
+  "doc_id": "IT_payroll_v1",
+  "country": "Italy",
+  "policy_type": "payroll",
+  "last_updated": "2025-01-01",
+  "sections": [
+    {
+      "section_id": "cutoff",
+      "title": "Payroll Cutoff",
+      "text": "Payroll inputs in Italy must typically be submitted by the 20th of the month to ensure payment processing."
+    }
+  ]
+}
