@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Dict, List
 
 from src.agents.retriever import load_policies
@@ -72,15 +73,16 @@ def build_policy_graph(policies) -> Dict[str, List[dict]]:
     return {"nodes": nodes, "edges": edges}
 
 
-def export_policy_graph(path="policy_graph.json"):
+def export_policy_graph(path="outputs/policy_graph.json"):
     policies = load_policies()
     graph = build_policy_graph(policies)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(graph, f, indent=2, ensure_ascii=True)
     return path
 
 
-def export_policy_graph_dot(path="policy_graph.dot"):
+def export_policy_graph_dot(path="outputs/policy_graph.dot"):
     policies = load_policies()
     graph = build_policy_graph(policies)
 
@@ -96,6 +98,7 @@ def export_policy_graph_dot(path="policy_graph.dot"):
         lines.append(f'  "{e["source"]}" -> "{e["target"]}" [label="{e["relation"]}"];')
 
     lines.append("}")
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     return path

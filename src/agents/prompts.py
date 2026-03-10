@@ -7,6 +7,7 @@ Rules:
 - Do not invent legal facts.
 - Only use the evidence provided.
 - If evidence is insufficient, say so clearly.
+- If evidence directly answers the question, you MUST answer and cite it.
 
 Citation rules:
 Citations MUST use this exact format:

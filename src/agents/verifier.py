@@ -138,6 +138,7 @@ def verify(query, draft_answer, evidence):
             "unable to determine",
             "does not contain information",
             "cannot determine",
+            "unable to provide a grounded answer",
         ]
     ):
         return {

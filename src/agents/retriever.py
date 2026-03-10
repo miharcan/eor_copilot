@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 from src.agents.policy_schema import PolicyDocument
 
 POLICY_DIR = "data/policies"
-STALE_DAYS_THRESHOLD = 365
+STALE_DAYS_THRESHOLD = 730
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 

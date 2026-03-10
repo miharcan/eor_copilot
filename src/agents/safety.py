@@ -3,7 +3,7 @@ import os
 import re
 from datetime import datetime, timedelta
 
-AUDIT_LOG_PATH = "audit.log"
+AUDIT_LOG_PATH = "outputs/audit.log"
 RETENTION_DAYS = 365  # 1 year
 
 _EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")

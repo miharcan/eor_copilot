@@ -167,7 +167,7 @@ python -m scripts.policy_coverage
 Optional: render the DOT graph (requires Graphviz):
 
 ```
-dot -Tpng policy_graph.dot -o policy_graph.png
+dot -Tpng outputs/policy_graph.dot -o outputs/policy_graph.png
 ```
 
 Multilingual demo (German/Spanish/French):
