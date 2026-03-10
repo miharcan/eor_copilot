@@ -139,4 +139,9 @@ def retrieve(query):
 
         filtered.append(i)
 
-    return [METADATA[i] for i in filtered[:3]]
+    results = []
+    for i in filtered[:3]:
+        item = dict(METADATA[i])
+        item["score"] = float(hybrid_scores[i])
+        results.append(item)
+    return results

@@ -1,5 +1,6 @@
 import time
 import json
+import argparse
 
 from src.agents.retriever import retrieve, load_policies
 from src.agents.generator import generate_answer
@@ -90,7 +91,8 @@ def run_query(query):
     t_retrieval_ms = int((time.time() - t0) * 1000)
 
     evidence_lines = [
-        f"{e['doc_id']} - {e['section']} ({e['timestamp']})" for e in evidence
+        f"{e['doc_id']} - {e['section']} ({e['timestamp']}) [score={e.get('score', 0):.3f}]"
+        for e in evidence
     ]
     _print_block("Retrieved Evidence", evidence_lines)
     if evidence:
@@ -164,10 +166,25 @@ def run_query(query):
     t_generation_ms = int((time.time() - t1) * 1000)
 
     _print_block("Draft Answer", [draft.get("final_answer", "")])
-    draft_citations = [
-        f"{c['doc_id']} | {c['section']} | {c['timestamp']}"
-        for c in draft.get("citations", [])
-    ]
+    draft_citations = []
+    for c in draft.get("citations", []):
+        score = None
+        for e in evidence:
+            if (
+                e.get("doc_id") == c.get("doc_id")
+                and e.get("section") == c.get("section")
+                and e.get("timestamp") == c.get("timestamp")
+            ):
+                score = e.get("score")
+                break
+        if score is not None:
+            draft_citations.append(
+                f"{c['doc_id']} | {c['section']} | {c['timestamp']} | score={score:.3f}"
+            )
+        else:
+            draft_citations.append(
+                f"{c['doc_id']} | {c['section']} | {c['timestamp']}"
+            )
     _print_block("Draft Citations", draft_citations)
 
     verification = verify(query_for_processing, draft, evidence)
@@ -218,9 +235,25 @@ def run_query(query):
         follow_up = [translate_text(q, lang, source_lang="en") for q in follow_up]
 
     _print_block("Final Answer", [final_answer])
-    final_citations = [
-        f"{c['doc_id']} | {c['section']} | {c['timestamp']}" for c in citations
-    ]
+    final_citations = []
+    for c in citations:
+        score = None
+        for e in evidence:
+            if (
+                e.get("doc_id") == c.get("doc_id")
+                and e.get("section") == c.get("section")
+                and e.get("timestamp") == c.get("timestamp")
+            ):
+                score = e.get("score")
+                break
+        if score is not None:
+            final_citations.append(
+                f"{c['doc_id']} | {c['section']} | {c['timestamp']} | score={score:.3f}"
+            )
+        else:
+            final_citations.append(
+                f"{c['doc_id']} | {c['section']} | {c['timestamp']}"
+            )
     _print_block("Citations", final_citations)
     _print_block("Confidence", [confidence])
     _print_block("Reason", [reason])
@@ -229,10 +262,17 @@ def run_query(query):
 
 
 if __name__ == "__main__":
-    try:        
-        with open("evaluation/test_queries.json") as f:
-            test_cases = json.load(f)
-        for case in test_cases:
-            run_query(case["query"])
-    except Exception:
-        run_query("Can we terminate during probation in Germany?")
+    parser = argparse.ArgumentParser(description="EOR Compliance Copilot")
+    parser.add_argument("--query", type=str, help="Run a single ad-hoc query")
+    args = parser.parse_args()
+
+    if args.query:
+        run_query(args.query)
+    else:
+        try:
+            with open("evaluation/test_queries.json") as f:
+                test_cases = json.load(f)
+            for case in test_cases:
+                run_query(case["query"])
+        except Exception:
+            run_query("Can we terminate during probation in Germany?")

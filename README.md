@@ -140,6 +140,12 @@ Run the demo queries:
 python app.py
 ```
 
+Run a single query:
+
+```
+python app.py --query "What is the payroll cutoff for Italy?"
+```
+
 Run offline evaluation:
 
 ```
