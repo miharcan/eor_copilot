@@ -5,6 +5,7 @@ from src.agents.retriever import retrieve, load_policies
 from src.agents.generator import generate_answer
 from src.agents.verifier import verify
 from src.agents.safety import audit_log, redact_pii
+from src.agents.query_understanding import extract_entities
 
 
 def _extract_countries():
@@ -58,6 +59,8 @@ def run_query(query):
 
     print("\nQuery:")
     print(query)
+    entities = extract_entities(query)
+    audit_log("query_entities", {"query": redact_pii(query), "entities": entities})
 
     t0 = time.time()
     evidence = retrieve(query)
