@@ -143,19 +143,36 @@ python app.py
 Run offline evaluation:
 
 ```
-python evaluation/retrieval_eval.py
+python -m evaluation.retrieval_eval
 ```
+
+Notes:
+- First run downloads `all-MiniLM-L6-v2`; HF warning is expected without `HF_TOKEN`.
+- Generator uses OpenAI API; set `OPENAI_API_KEY` for full evaluation.
+- Queries can be multilingual; the system translates to English for retrieval and returns answers in the user’s language.
 
 Generate a policy knowledge graph export:
 
 ```
-python scripts/policy_graph.py
+python -m scripts.policy_graph
 ```
 
 Generate a policy coverage report (missing policy types per country):
 
 ```
-python scripts/policy_coverage.py
+python -m scripts.policy_coverage
+```
+
+Optional: render the DOT graph (requires Graphviz):
+
+```
+dot -Tpng policy_graph.dot -o policy_graph.png
+```
+
+Multilingual demo (German/Spanish/French):
+
+```
+python -m scripts.multilingual_demo
 ```
 
 ---

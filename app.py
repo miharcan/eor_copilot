@@ -6,6 +6,7 @@ from src.agents.generator import generate_answer
 from src.agents.verifier import verify
 from src.agents.safety import audit_log, redact_pii
 from src.agents.query_understanding import extract_entities
+from src.agents.translation import detect_language, translate_text
 
 
 def _extract_countries():
@@ -24,46 +25,72 @@ def _detect_countries_in_query(query, countries):
 
 def run_query(query):
 
+    original_query = query
+    lang = detect_language(original_query)
+    query_for_processing = original_query
+    if lang != "en":
+        query_for_processing = translate_text(original_query, "en", source_lang=lang)
+
     countries = _extract_countries()
-    detected = _detect_countries_in_query(query, countries)
+    detected = _detect_countries_in_query(query_for_processing, countries)
     if len(detected) == 0:
+        final_answer = "Unable to answer without country context."
+        reason = "Country is missing."
+        follow_up = "Which country does this question apply to?"
+        if lang != "en":
+            final_answer = translate_text(final_answer, lang, source_lang="en")
+            reason = translate_text(reason, lang, source_lang="en")
+            follow_up = translate_text(follow_up, lang, source_lang="en")
         print("\nFinal Answer:")
-        print("Unable to answer without country context.")
+        print(final_answer)
         print("\nCitations:")
         print("None")
         print("\nConfidence:")
         print("Low")
         print("\nReason:")
-        print("Country is missing.")
+        print(reason)
         print("\nEscalation:")
         print("Ask for clarification")
         print("\nFollow-up Questions:")
-        print("Which country does this question apply to?")
-        audit_log("clarify_country_missing", {"query": redact_pii(query)})
+        print(follow_up)
+        audit_log("clarify_country_missing", {"query": redact_pii(original_query), "lang": lang})
         return
     if len(detected) > 1:
+        final_answer = "Unable to answer without a single country context."
+        reason = "Multiple countries detected."
+        follow_up = f"Multiple countries detected ({', '.join(detected)}). Which one applies?"
+        if lang != "en":
+            final_answer = translate_text(final_answer, lang, source_lang="en")
+            reason = translate_text(reason, lang, source_lang="en")
+            follow_up = translate_text(follow_up, lang, source_lang="en")
         print("\nFinal Answer:")
-        print("Unable to answer without a single country context.")
+        print(final_answer)
         print("\nCitations:")
         print("None")
         print("\nConfidence:")
         print("Low")
         print("\nReason:")
-        print("Multiple countries detected.")
+        print(reason)
         print("\nEscalation:")
         print("Ask for clarification")
         print("\nFollow-up Questions:")
-        print(f"Multiple countries detected ({', '.join(detected)}). Which one applies?")
-        audit_log("clarify_country_ambiguous", {"query": redact_pii(query), "countries": detected})
+        print(follow_up)
+        audit_log(
+            "clarify_country_ambiguous",
+            {"query": redact_pii(original_query), "countries": detected, "lang": lang}
+        )
         return
 
     print("\nQuery:")
-    print(query)
-    entities = extract_entities(query)
-    audit_log("query_entities", {"query": redact_pii(query), "entities": entities})
+    print(original_query)
+    entities = extract_entities(query_for_processing)
+    audit_log(
+        "query_entities",
+        {"query": redact_pii(original_query), "entities": entities, "lang": lang}
+    )
 
     t0 = time.time()
-    evidence = retrieve(query)
+    evidence = retrieve(query_for_processing)
     t_retrieval_ms = int((time.time() - t0) * 1000)
 
     print("\nRetrieved Evidence:")
@@ -76,7 +103,7 @@ def run_query(query):
         audit_log(
             "evidence_trail",
             {
-                "query": redact_pii(query),
+                "query": redact_pii(original_query),
                 "evidence": [
                     {
                         "doc_id": e.get("doc_id"),
@@ -90,7 +117,7 @@ def run_query(query):
         )
 
     t1 = time.time()
-    draft_raw = generate_answer(query, evidence)
+    draft_raw = generate_answer(query_for_processing, evidence)
 
     if isinstance(draft_raw, dict):
         draft = draft_raw
@@ -119,16 +146,17 @@ def run_query(query):
     else:
         print("None")
 
-    verification = verify(query, draft, evidence)
+    verification = verify(query_for_processing, draft, evidence)
     audit_log(
         "verification",
         {
-            "query": redact_pii(query),
+            "query": redact_pii(original_query),
             "confidence": verification.get("confidence"),
             "reason": verification.get("reason"),
             "escalation": verification.get("escalation"),
             "evidence_ids": [e.get("doc_id") for e in evidence],
             "citations": draft.get("citations", []),
+            "lang": lang,
             "latency_ms": {
                 "retrieval": t_retrieval_ms,
                 "generation": t_generation_ms,
@@ -158,6 +186,13 @@ def run_query(query):
                 "escalation": verification.get("escalation"),
             },
         )
+
+    if lang != "en":
+        final_answer = translate_text(final_answer, lang, source_lang="en")
+        reason = translate_text(reason, lang, source_lang="en")
+        if escalation != "None":
+            escalation = translate_text(escalation, lang, source_lang="en")
+        follow_up = [translate_text(q, lang, source_lang="en") for q in follow_up]
 
     print("\nFinal Answer:")
     print(final_answer)

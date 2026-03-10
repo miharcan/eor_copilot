@@ -78,3 +78,24 @@ def export_policy_graph(path="policy_graph.json"):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(graph, f, indent=2, ensure_ascii=True)
     return path
+
+
+def export_policy_graph_dot(path="policy_graph.dot"):
+    policies = load_policies()
+    graph = build_policy_graph(policies)
+
+    lines = ["digraph PolicyGraph {"]
+    lines.append("  rankdir=LR;")
+    lines.append("  node [shape=box, fontsize=10];")
+
+    for n in graph["nodes"]:
+        label = n["label"].replace('"', "'")
+        lines.append(f'  "{n["id"]}" [label="{label}"];')
+
+    for e in graph["edges"]:
+        lines.append(f'  "{e["source"]}" -> "{e["target"]}" [label="{e["relation"]}"];')
+
+    lines.append("}")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    return path

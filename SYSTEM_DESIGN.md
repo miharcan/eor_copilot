@@ -82,6 +82,11 @@ This document describes the system design for an evidence‑grounded EOR complia
   - No conflicts or stale docs, and
   - The query is not high‑risk without sufficient detail.
 
+**Multilingual support**
+- Queries are language‑detected and translated to English for retrieval and generation.
+- Final answers and follow‑up questions are translated back to the user’s language.
+- Citations remain unchanged (doc ID | section | timestamp).
+
 ## 4) Safety, Privacy, and Governance
 
 **Guardrails (refusal/escalation)**

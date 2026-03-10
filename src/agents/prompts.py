@@ -45,7 +45,7 @@ Return the response strictly as JSON with this schema:
   ],
   "confidence": "High | Medium | Low",
   "reason": string,
-  "escalation": "None | Consult Legal",
+  "escalation": "None | Consult Legal | Ask for clarification",
   "follow_up_questions": [string]
 }
 """
