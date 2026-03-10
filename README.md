@@ -146,6 +146,12 @@ Run offline evaluation:
 python -m evaluation.retrieval_eval
 ```
 
+Run unit tests:
+
+```
+pytest
+```
+
 Notes:
 - First run downloads `all-MiniLM-L6-v2`; HF warning is expected without `HF_TOKEN`.
 - Generator uses OpenAI API; set `OPENAI_API_KEY` for full evaluation.
