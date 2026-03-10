@@ -13,6 +13,10 @@ Agents in the system:
 - **Verifier** – validates citations and evidence consistency
 - **Safety Layer** – handles audit logging, escalation, and PII protection
 
+Quick links:
+- System design: `SYSTEM_DESIGN.md`
+- Evaluation plan: `evaluation/EVALUATION.md`
+
 ---
 
 ## System Architecture
@@ -134,6 +138,12 @@ Run the demo queries:
 
 ```
 python app.py
+```
+
+Run offline evaluation:
+
+```
+python evaluation/retrieval_eval.py
 ```
 
 ---
