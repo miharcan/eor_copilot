@@ -1,13 +1,12 @@
 import json
 import os
 import re
-from datetime import date
 import numpy as np
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
+from src.agents.policy_schema import PolicyDocument
 
 POLICY_DIR = "data/policies"
-STALE_DAYS_THRESHOLD = 365
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -17,7 +16,8 @@ def load_policies():
     for f in os.listdir(POLICY_DIR):
         if f.endswith(".json"):
             with open(os.path.join(POLICY_DIR, f)) as file:
-                policies.append(json.load(file))
+                raw = json.load(file)
+                policies.append(PolicyDocument(**raw).model_dump())
     return policies
 
 

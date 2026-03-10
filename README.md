@@ -146,6 +146,18 @@ Run offline evaluation:
 python evaluation/retrieval_eval.py
 ```
 
+Generate a policy knowledge graph export:
+
+```
+python scripts/policy_graph.py
+```
+
+Generate a policy coverage report (missing policy types per country):
+
+```
+python scripts/policy_coverage.py
+```
+
 ---
 
 ## Design Principles
