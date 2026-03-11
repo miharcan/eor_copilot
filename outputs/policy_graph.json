@@ -1,0 +1,295 @@
+{
+  "nodes": [
+    {
+      "id": "doc:FR_notice_v1",
+      "type": "policy_doc",
+      "label": "FR_notice_v1",
+      "props": {
+        "country": "France",
+        "policy_type": "notice",
+        "version": null,
+        "last_updated": "2025-01-01"
+      }
+    },
+    {
+      "id": "country:France",
+      "type": "country",
+      "label": "France",
+      "props": {}
+    },
+    {
+      "id": "type:notice",
+      "type": "policy_type",
+      "label": "notice",
+      "props": {}
+    },
+    {
+      "id": "section:FR_notice_v1:notice_period",
+      "type": "section",
+      "label": "Notice Period",
+      "props": {
+        "section_id": "notice_period"
+      }
+    },
+    {
+      "id": "doc:DE_termination_v1",
+      "type": "policy_doc",
+      "label": "DE_termination_v1",
+      "props": {
+        "country": "Germany",
+        "policy_type": "termination",
+        "version": 1,
+        "last_updated": "2025-01-01"
+      }
+    },
+    {
+      "id": "country:Germany",
+      "type": "country",
+      "label": "Germany",
+      "props": {}
+    },
+    {
+      "id": "type:termination",
+      "type": "policy_type",
+      "label": "termination",
+      "props": {}
+    },
+    {
+      "id": "section:DE_termination_v1:probation",
+      "type": "section",
+      "label": "Termination During Probation",
+      "props": {
+        "section_id": "probation"
+      }
+    },
+    {
+      "id": "doc:NL_benefits_v1",
+      "type": "policy_doc",
+      "label": "NL_benefits_v1",
+      "props": {
+        "country": "Netherlands",
+        "policy_type": "benefits",
+        "version": null,
+        "last_updated": "2025-01-01"
+      }
+    },
+    {
+      "id": "country:Netherlands",
+      "type": "country",
+      "label": "Netherlands",
+      "props": {}
+    },
+    {
+      "id": "type:benefits",
+      "type": "policy_type",
+      "label": "benefits",
+      "props": {}
+    },
+    {
+      "id": "section:NL_benefits_v1:health_insurance",
+      "type": "section",
+      "label": "Private Health Insurance",
+      "props": {
+        "section_id": "health_insurance"
+      }
+    },
+    {
+      "id": "doc:IT_payroll_v1",
+      "type": "policy_doc",
+      "label": "IT_payroll_v1",
+      "props": {
+        "country": "Italy",
+        "policy_type": "payroll",
+        "version": null,
+        "last_updated": "2025-01-01"
+      }
+    },
+    {
+      "id": "country:Italy",
+      "type": "country",
+      "label": "Italy",
+      "props": {}
+    },
+    {
+      "id": "type:payroll",
+      "type": "policy_type",
+      "label": "payroll",
+      "props": {}
+    },
+    {
+      "id": "section:IT_payroll_v1:cutoff",
+      "type": "section",
+      "label": "Payroll Cutoff",
+      "props": {
+        "section_id": "cutoff"
+      }
+    },
+    {
+      "id": "doc:PL_onboarding_v1",
+      "type": "policy_doc",
+      "label": "PL_onboarding_v1",
+      "props": {
+        "country": "Poland",
+        "policy_type": "onboarding",
+        "version": 1,
+        "last_updated": "2025-01-01"
+      }
+    },
+    {
+      "id": "country:Poland",
+      "type": "country",
+      "label": "Poland",
+      "props": {}
+    },
+    {
+      "id": "type:onboarding",
+      "type": "policy_type",
+      "label": "onboarding",
+      "props": {}
+    },
+    {
+      "id": "section:PL_onboarding_v1:documents",
+      "type": "section",
+      "label": "Required Onboarding Documents",
+      "props": {
+        "section_id": "documents"
+      }
+    },
+    {
+      "id": "doc:ES_onboarding_v1",
+      "type": "policy_doc",
+      "label": "ES_onboarding_v1",
+      "props": {
+        "country": "Spain",
+        "policy_type": "onboarding",
+        "version": 1,
+        "last_updated": "2025-01-01"
+      }
+    },
+    {
+      "id": "country:Spain",
+      "type": "country",
+      "label": "Spain",
+      "props": {}
+    },
+    {
+      "id": "type:onboarding",
+      "type": "policy_type",
+      "label": "onboarding",
+      "props": {}
+    },
+    {
+      "id": "section:ES_onboarding_v1:documents",
+      "type": "section",
+      "label": "Required Onboarding Documents",
+      "props": {
+        "section_id": "documents"
+      }
+    },
+    {
+      "id": "section:ES_onboarding_v1:bank_account",
+      "type": "section",
+      "label": "Local Bank Account Requirement",
+      "props": {
+        "section_id": "bank_account"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "country:France",
+      "target": "doc:FR_notice_v1",
+      "relation": "HAS_POLICY"
+    },
+    {
+      "source": "type:notice",
+      "target": "doc:FR_notice_v1",
+      "relation": "OF_TYPE"
+    },
+    {
+      "source": "doc:FR_notice_v1",
+      "target": "section:FR_notice_v1:notice_period",
+      "relation": "HAS_SECTION"
+    },
+    {
+      "source": "country:Germany",
+      "target": "doc:DE_termination_v1",
+      "relation": "HAS_POLICY"
+    },
+    {
+      "source": "type:termination",
+      "target": "doc:DE_termination_v1",
+      "relation": "OF_TYPE"
+    },
+    {
+      "source": "doc:DE_termination_v1",
+      "target": "section:DE_termination_v1:probation",
+      "relation": "HAS_SECTION"
+    },
+    {
+      "source": "country:Netherlands",
+      "target": "doc:NL_benefits_v1",
+      "relation": "HAS_POLICY"
+    },
+    {
+      "source": "type:benefits",
+      "target": "doc:NL_benefits_v1",
+      "relation": "OF_TYPE"
+    },
+    {
+      "source": "doc:NL_benefits_v1",
+      "target": "section:NL_benefits_v1:health_insurance",
+      "relation": "HAS_SECTION"
+    },
+    {
+      "source": "country:Italy",
+      "target": "doc:IT_payroll_v1",
+      "relation": "HAS_POLICY"
+    },
+    {
+      "source": "type:payroll",
+      "target": "doc:IT_payroll_v1",
+      "relation": "OF_TYPE"
+    },
+    {
+      "source": "doc:IT_payroll_v1",
+      "target": "section:IT_payroll_v1:cutoff",
+      "relation": "HAS_SECTION"
+    },
+    {
+      "source": "country:Poland",
+      "target": "doc:PL_onboarding_v1",
+      "relation": "HAS_POLICY"
+    },
+    {
+      "source": "type:onboarding",
+      "target": "doc:PL_onboarding_v1",
+      "relation": "OF_TYPE"
+    },
+    {
+      "source": "doc:PL_onboarding_v1",
+      "target": "section:PL_onboarding_v1:documents",
+      "relation": "HAS_SECTION"
+    },
+    {
+      "source": "country:Spain",
+      "target": "doc:ES_onboarding_v1",
+      "relation": "HAS_POLICY"
+    },
+    {
+      "source": "type:onboarding",
+      "target": "doc:ES_onboarding_v1",
+      "relation": "OF_TYPE"
+    },
+    {
+      "source": "doc:ES_onboarding_v1",
+      "target": "section:ES_onboarding_v1:documents",
+      "relation": "HAS_SECTION"
+    },
+    {
+      "source": "doc:ES_onboarding_v1",
+      "target": "section:ES_onboarding_v1:bank_account",
+      "relation": "HAS_SECTION"
+    }
+  ]
+}
