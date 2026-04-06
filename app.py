@@ -8,6 +8,10 @@ from src.agents.verifier import verify
 from src.agents.safety import audit_log, redact_pii
 from src.agents.query_understanding import extract_entities
 from src.agents.translation import detect_language, translate_text
+from src.agents.country_detection import (
+    detect_supported_countries,
+    detect_unsupported_country_mentions,
+)
 
 
 def _extract_countries():
@@ -18,10 +22,6 @@ def _extract_countries():
             countries.add(country.lower())
     return countries
 
-
-def _detect_countries_in_query(query, countries):
-    query_lower = query.lower()
-    return [c for c in countries if c in query_lower]
 
 def _print_block(title, lines):
     print(f"\n== {title} ==")
@@ -40,11 +40,39 @@ def run_query(query):
         query_for_processing = translate_text(original_query, "en", source_lang=lang)
 
     countries = _extract_countries()
-    detected = _detect_countries_in_query(query_for_processing, countries)
+    detected = detect_supported_countries(query_for_processing, countries)
+    unsupported_mentions = detect_unsupported_country_mentions(original_query, countries)
+    if lang != "en":
+        unsupported_mentions.extend(
+            detect_unsupported_country_mentions(query_for_processing, countries)
+        )
+        unsupported_mentions = list(dict.fromkeys(unsupported_mentions))
+
     if len(detected) == 0:
-        final_answer = "Unable to answer without country context."
-        reason = "Country is missing."
-        follow_up = "Which country does this question apply to?"
+        if unsupported_mentions:
+            unsupported_display = ", ".join(unsupported_mentions)
+            supported_display = ", ".join(sorted(c.title() for c in countries))
+            final_answer = (
+                f"Country context detected ({unsupported_display}), but policy coverage "
+                "for that country is not available in this dataset."
+            )
+            reason = "Country is provided, but no policy documents exist for it."
+            follow_up = (
+                f"Please add policy documents for {unsupported_display}, or ask about a "
+                f"supported country: {supported_display}."
+            )
+            event_name = "clarify_country_unsupported"
+            event_payload = {
+                "query": redact_pii(original_query),
+                "mentioned_countries": unsupported_mentions,
+                "lang": lang,
+            }
+        else:
+            final_answer = "Unable to answer without country context."
+            reason = "Country is missing."
+            follow_up = "Which country does this question apply to?"
+            event_name = "clarify_country_missing"
+            event_payload = {"query": redact_pii(original_query), "lang": lang}
         if lang != "en":
             final_answer = translate_text(final_answer, lang, source_lang="en")
             reason = translate_text(reason, lang, source_lang="en")
@@ -55,7 +83,7 @@ def run_query(query):
         _print_block("Reason", [reason])
         _print_block("Escalation", ["Ask for clarification"])
         _print_block("Follow-up Questions", [follow_up])
-        audit_log("clarify_country_missing", {"query": redact_pii(original_query), "lang": lang})
+        audit_log(event_name, event_payload)
         return
     if len(detected) > 1:
         final_answer = "Unable to answer without a single country context."
